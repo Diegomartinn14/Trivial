@@ -1,0 +1,1 @@
+En este proyecto voy a crear un juego de trivial en el que necesites realizar un log in para guardar tu maxima puntuacion y realizar un ranking entre los usuarios.
