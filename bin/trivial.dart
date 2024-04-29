@@ -1,3 +1,4 @@
+
 import 'dart:io';
 import 'Usuario.dart';
 import 'puntuacion.dart';
@@ -51,42 +52,79 @@ class trivial {
       menu1();
     } else {
       //menu2(resultado);
-      menu2(usuario);
+      menu2(resultado);
     } 
   }
   bool menu1ComprobarRespuesta(var respuesta) => respuesta != '1' && respuesta != '2' && respuesta != '3';
 
   //Menu 2
 
-  menu2(Usuario usuario) async {
+  menu2(usuario) async {
     String? respuesta;
+    String? nombre = usuario.nombre;
     do {
-      stdout.writeln('''Hola elige una de estas opciones:
+      stdout.writeln('''Hola $nombre elige una de estas opciones:
     1 -> Comenzar una partida
     2 -> Ver Clasificación propia
     3 -> Ver Clasificación General
-    4 -> Salir''');
+    4 -> Listar usuarios
+    5 -> Salir''');
       respuesta = stdin.readLineSync();
     } while (menu2ComprobarRespuesta(respuesta));
-
     switch (respuesta){
-     /* case '1':
-        menu3();
+      case '1':
+        menu3(usuario);
         break;
-        */
       case '2':
-        puntuacion().rankp(Usuario().idusuario);
+        stdout.writeln("Esta es tu Clasificación Personal");
+        List <puntuacion> puntos = await puntuacion().rankp(usuario.idusuario);
+        for(puntuacion elemento in puntos){
+          stdout.writeln('Nombre= ${usuario.nombre}, IDusuario= ${elemento.idusuario}, Puntuación= ${elemento.puntos}' );
+        }
         menu2(usuario);
         break;
       case '3': 
-        puntuacion().rankg();
+        stdout.writeln("Esta es la Clasificación Global");
+        List <puntuacion> puntos = await puntuacion().rankg();
+        for(puntuacion elemento in puntos){
+          stdout.writeln('IDusuario= ${elemento.idusuario}, Puntuación= ${elemento.puntos}' );
+        }
         menu2(usuario);
         break;
       case '4': 
-        print('Hasta la proxima!!');
+        stdout.writeln('Este es el listado de usuarios');
+        List <Usuario> usuarios = await Usuario().all();
+        for(Usuario elemento in usuarios){
+        stdout.writeln('IDusuario: ${elemento.idusuario}, Nombre: ${elemento.nombre}');
+        }
+        menu2(usuario);
+        break;
+     case '5':
+          print('Hasta la proxima $nombre!!');
         break;
     }
   }
-  bool menu2ComprobarRespuesta(var respuesta) => respuesta == null || respuesta != '1' && respuesta != '2' && respuesta != '3' && respuesta != '4';
+  bool menu2ComprobarRespuesta(var respuesta) => respuesta == null || respuesta != '1' && respuesta != '2' && respuesta != '3' && respuesta != '4' && respuesta != '5';
 
+
+
+  menu3(usuario)async{
+      String? respuesta;
+    String? nombre = usuario.nombre;
+    do {
+      stdout.writeln('''$nombre seleccione la categoria en la que quieres jugar:
+    1 -> Deportes
+    2 -> Historia
+    3 -> Cine
+    4 -> Musica
+    5 -> Salir''');
+      respuesta = stdin.readLineSync();
+    } while (menu3ComprobarRespuesta(respuesta));
+
+    switch(respuesta){
+      case '1':
+      
+    }
+  }
+  bool menu3ComprobarRespuesta(var respuesta) => respuesta == null || respuesta != '1' && respuesta != '2' && respuesta != '3' && respuesta != '4' && respuesta != '5';
 }

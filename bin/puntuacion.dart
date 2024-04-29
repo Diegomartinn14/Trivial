@@ -24,7 +24,9 @@ class puntuacion{
    rankp(idusuario) async {
     var conn = await Database().conexion();
     try {
-      var rankinp = await conn.query('SELECT * FROM puntuacion WHERE idusuario = $idusuario AND ORDER BY puntuacion DESC ');
+      var rankinp = await conn.query('SELECT * FROM puntuacion WHERE idusuario = ? ORDER BY puntuacion DESC ', [
+        idusuario
+      ]);
       List<puntuacion> puntos = rankinp.map((row) => puntuacion.fromMap(row)).toList();
       return puntos;
     } catch (e) {
@@ -39,7 +41,7 @@ class puntuacion{
     try {
       var rankg = await conn.query('SELECT * FROM puntuacion ORDER BY puntuacion DESC ');
       List<puntuacion> puntos = rankg.map((row) => puntuacion.fromMap(row)).toList();
-      return puntos;
+      return(puntos);
     } catch(e){
       print(e);
     } finally {

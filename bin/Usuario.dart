@@ -2,10 +2,10 @@ import 'Database.dart';
 import 'package:mysql1/mysql1.dart';
 
 class Usuario {
-  int? _idusuario;
-  String? _nombre;
-  String? _password;
-
+  int? idusuario;
+  String? nombre;
+  String? password;
+/*
   int? get idusuario {
     return this._idusuario;
   }
@@ -21,20 +21,20 @@ class Usuario {
   }
 
   set password(String? texto) => this._password = texto;
-
+*/
   Usuario();
   Usuario.fromMap(ResultRow map) {
-    this._idusuario = map['idusuario'];
-    this._nombre = map['nombre'];
-    this._password = map['password'];
+    this.idusuario = map['idusuario'];
+    this.nombre = map['nombre'];
+    this.password = map['password'];
   }
 
   insertarUsuario() async {
     var conn = await Database().conexion();
     try {
       await conn.query('INSERT INTO usuarios(nombre,password) VALUES (?,?)', [
-        _nombre,
-        _password
+        nombre,
+        password
       ]);
       print('Usuario insertado correctamente');
     } catch (e) {
@@ -60,10 +60,10 @@ class Usuario {
     var conn = await Database().conexion();
     try {
       var resultado = await conn.query('SELECT * FROM usuarios WHERE nombre = ?', [
-        this._nombre
+        this.nombre
       ]);
       Usuario usuario = Usuario.fromMap(resultado.first);
-      if (this._password == usuario.password) {
+      if (this.password == usuario.password) {
         return usuario;
       } else {
         return false;
