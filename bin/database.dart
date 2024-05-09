@@ -16,6 +16,7 @@ class Database {
       await _crearDB(conn);
       await _crearTablaUsuarios(conn);
       await _crearTablaPuntuacion(conn);
+      await _crearTablaPreguntas(conn);
     } catch (e) {
       print(e);
     } finally {
@@ -40,10 +41,20 @@ class Database {
     await conn.query(''' CREATE TABLE IF NOT EXISTS puntuacion(
       idpuntuacion INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       idusuario INT NOT NULL,
-      puntuacion INT NULL,
+      categoria VARCHAR(20) NOT NULL,
+      puntuacion INT NOT NULL,
       FOREIGN KEY(idusuario) REFERENCES usuarios(idusuario)
     )''');
     print('Tabla de puntuación creada');
+  }
+  _crearTablaPreguntas(conn) async{
+    await conn.query(''' CREATE TABLE IF NOT EXISTS preguntas(
+      idpregunta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      categoria VARCHAR (20) NOT NULL,
+      pregunta VARCHAR(200) NOT NULL,
+      respuesta VARCHAR(1) NOT NULL
+    )''');
+    print('Tabla de preguntas creada');
   }
   Future<MySqlConnection> conexion() async {
     var setting = /*new*/ ConnectionSettings(host: this._host, port: this._port, user: this._user, db: 'trivialdb');

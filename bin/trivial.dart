@@ -1,8 +1,7 @@
-
 import 'dart:io';
 import 'Usuario.dart';
 import 'puntuacion.dart';
-
+import 'preguntas.dart';
 class trivial {
 
   //Menu 1
@@ -13,48 +12,23 @@ class trivial {
       stdout.writeln('''elige una de estas opciones para poder jugar al trivial:
     1 -> Crear Usuario
     2 -> Login
-    3 -> Salir''');
+    3 -> Crerrar trivial''');
       respuesta = stdin.readLineSync();
     } while (menu1ComprobarRespuesta(respuesta));
 
     switch (respuesta) {
       case '1':
-        crearUsuario();
+        Usuario().crearUsuario();
         break;
       case '2':
-        login();
+        Usuario().login();
         break;
       case '3':
         stdout.writeln('Hasta Luego');
         break;
     }
   }
-  crearUsuario() {
-    Usuario usuario = new Usuario();
-    stdout.writeln('Introduce un nombre de usuario');
-    usuario.nombre = stdin.readLineSync();
-    stdout.writeln('Introduce una contraseña');
-    usuario.password = stdin.readLineSync();
-    usuario.insertarUsuario();
-    stdout.writeln('Usuario creado correctamente');
-    menu1();
-  }
   
-  login() async {
-    Usuario usuario = new Usuario();
-    stdout.writeln('Introduce tu nombre de usuario:');
-    usuario.nombre = stdin.readLineSync();
-    stdout.writeln('Introduce tu contraseña:');
-    usuario.password = stdin.readLineSync();
-    var resultado = await usuario.loginUsuario();
-    if (resultado == false) {
-      stdout.writeln('Tu nombre de usuario o contraseña son incorrectos');
-      menu1();
-    } else {
-      //menu2(resultado);
-      menu2(resultado);
-    } 
-  }
   bool menu1ComprobarRespuesta(var respuesta) => respuesta != '1' && respuesta != '2' && respuesta != '3';
 
   //Menu 2
@@ -68,7 +42,7 @@ class trivial {
     2 -> Ver Clasificación propia
     3 -> Ver Clasificación General
     4 -> Listar usuarios
-    5 -> Salir''');
+    5 -> Cerrar sesión''');
       respuesta = stdin.readLineSync();
     } while (menu2ComprobarRespuesta(respuesta));
     switch (respuesta){
@@ -77,17 +51,17 @@ class trivial {
         break;
       case '2':
         stdout.writeln("Esta es tu Clasificación Personal");
-        List <puntuacion> puntos = await puntuacion().rankp(usuario.idusuario);
-        for(puntuacion elemento in puntos){
-          stdout.writeln('Nombre= ${usuario.nombre}, IDusuario= ${elemento.idusuario}, Puntuación= ${elemento.puntos}' );
+        List <Puntuacion> puntos = await Puntuacion().rankp(usuario.idusuario);
+        for(Puntuacion elemento in puntos){
+          stdout.writeln('Nombre= $nombre, IDusuario= ${elemento.idusuario}, Categoria= ${elemento.categoria}, Puntuación= ${elemento.puntuacion}' );
         }
         menu2(usuario);
         break;
       case '3': 
         stdout.writeln("Esta es la Clasificación Global");
-        List <puntuacion> puntos = await puntuacion().rankg();
-        for(puntuacion elemento in puntos){
-          stdout.writeln('IDusuario= ${elemento.idusuario}, Puntuación= ${elemento.puntos}' );
+        List <Puntuacion> puntos = await Puntuacion().rankg();
+        for(Puntuacion elemento in puntos){
+          stdout.writeln('IDusuario= ${elemento.idusuario}, Categoria= ${elemento.categoria}, Puntuación= ${elemento.puntuacion}' );
         }
         menu2(usuario);
         break;
@@ -101,6 +75,7 @@ class trivial {
         break;
      case '5':
           print('Hasta la proxima $nombre!!');
+          menu1();
         break;
     }
   }
@@ -117,13 +92,117 @@ class trivial {
     2 -> Historia
     3 -> Cine
     4 -> Musica
-    5 -> Salir''');
+    5 -> Volver''');
       respuesta = stdin.readLineSync();
     } while (menu3ComprobarRespuesta(respuesta));
-
+    int contador = 0;
+    
     switch(respuesta){
       case '1':
-      
+        Puntuacion().contadorp = contador;
+        String categoria = 'Deportes';
+        List <preguntas> preguntaD = await preguntas().preguntasD(usuario, categoria);
+        print(preguntas().categoria);
+        for(preguntas elemento in preguntaD){
+            stdout.writeln('${elemento.pregunta}');
+            String? respuesta = stdin.readLineSync() ?? 'e';
+            if(respuesta == elemento.respuesta){
+              contador += 10;
+              if(contador == 100){
+                stdout.writeln('Enhorabuena $nombre has completado todas las preguntas de $categoria');
+                await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+                menu3(usuario);
+              }else{
+                stdout.writeln('Respuesta correcta');
+              }
+            }else{
+              stdout.writeln('Respuesta incorrecta');
+              stdout.writeln('Esta ha sido tu puntuacion $contador');
+              await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+              menu3(usuario);
+              break;
+            }
+        }
+        break;
+      case '2':
+       Puntuacion().contadorp = contador;
+        String categoria = 'Historia';
+        List <preguntas> preguntaH = await preguntas().preguntasH(usuario, categoria);
+        print(preguntas().categoria);
+        for(preguntas elemento in preguntaH){
+            stdout.writeln('${elemento.pregunta}');
+            String? respuesta = stdin.readLineSync() ?? 'e';
+            if(respuesta == elemento.respuesta){
+              contador += 10;
+              if(contador == 100){
+                stdout.writeln('Enhorabuena $nombre has completado todas las preguntas de $categoria');
+                await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+                menu3(usuario);
+              }else{
+                stdout.writeln('Respuesta correcta');
+              }
+            }else{
+              stdout.writeln('Respuesta incorrecta');
+              stdout.writeln('Esta ha sido tu puntuacion $contador');
+              await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+              menu3(usuario);
+              break;
+            }
+        }
+      case '3':
+         Puntuacion().contadorp = contador;
+        String categoria = 'Cine';
+        List <preguntas> preguntaC = await preguntas().preguntasC(usuario, categoria);
+        print(preguntas().categoria);
+        for(preguntas elemento in preguntaC){
+            stdout.writeln('${elemento.pregunta}');
+            String? respuesta = stdin.readLineSync() ?? 'e';
+            if(respuesta == elemento.respuesta){
+              contador += 10;
+              if(contador == 100){
+                stdout.writeln('Enhorabuena $nombre has completado todas las preguntas de $categoria');
+                await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+                menu3(usuario);
+              }else{
+                stdout.writeln('Respuesta correcta');
+              }
+            }else{
+              stdout.writeln('Respuesta incorrecta');
+              stdout.writeln('Esta ha sido tu puntuacion $contador');
+              await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+              menu3(usuario);
+              break;
+            }
+        }
+        break;
+      case '4':
+        Puntuacion().contadorp = contador;
+        String categoria = 'Musica';
+        List <preguntas> preguntaM = await preguntas().preguntasM(usuario, categoria);
+        print(preguntas().categoria);
+        for(preguntas elemento in preguntaM){
+            stdout.writeln('${elemento.pregunta}');
+            String? respuesta = stdin.readLineSync() ?? 'e';
+            if(respuesta == elemento.respuesta){
+              contador += 10;
+              if(contador == 100){
+                stdout.writeln('Enhorabuena $nombre has completado todas las preguntas de $categoria');
+                await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+                menu3(usuario);
+              }else{
+                stdout.writeln('Respuesta correcta');
+              }
+            }else{
+              stdout.writeln('Respuesta incorrecta');
+              stdout.writeln('Esta ha sido tu puntuacion $contador');
+              await Puntuacion().crearPuntuacion(usuario.idusuario, contador, categoria);
+              menu3(usuario);
+              break;
+            }
+        }
+      case '5':
+        menu2(usuario);
+        break;
     }
   }
   bool menu3ComprobarRespuesta(var respuesta) => respuesta == null || respuesta != '1' && respuesta != '2' && respuesta != '3' && respuesta != '4' && respuesta != '5';
